@@ -16,13 +16,24 @@
       id: Date.now(),
     };
 
+    // #Format (inserted data into string dynamically)
+    console.log(`Todo with id ${todo.id} added!`);
+
     // #ReactiveDeclaration
     // Because Svelte's reactivity is based on assignments, using array methods like
     // .push() and .splice() won't automatically trigger updates
     // We use the spread operator and reassignment below to trigger the update and take advantage of
     // Svelte's reactivity
     todoItems = [...todoItems, todo];
+    // #ReactiveDeclaration on newTodo var to clear the input field
     newTodo = '';
+  }
+
+  function toggleDone(id) {
+    // #Properties - on the item id
+    const index = todoItems.findIndex((item) => item.id === Number(id));
+    // #Properties - we use the . notation to access properties of the todo object
+    todoItems[index].checked = !todoItems[index].checked;
   }
 </script>
 
@@ -33,7 +44,28 @@
     <!-- The "Tasks" could just be called whatever the app name is -->
     <!-- The Text Expressions concept helps reduce repetition -->
     <h1 class="app-title">{appTitle}!</h1>
-    <ul class="todo-list" />
+    <ul class="todo-list">
+      <!-- #controlFlow #loop -->
+      <!-- #each iterates over the todoItems array and creates a new <li> for each item to the DOM -->
+      <!-- #key uniquely identifies each item in the array using svelt's () syntax -->
+      {#each todoItems as todo (todo.id)}
+        <!-- #Properties checked property access -->
+        <li class="todo-item {todo.checked ? 'done' : ''}">
+          <input id={todo.id} type="checkbox" />
+          <label
+            for={todo.id}
+            class="tick"
+            on:click={() => toggleDone(todo.id)}
+          />
+          <span>{todo.text}</span>
+          <button class="delete-todo">
+            <svg><use href="#delete-icon" /></svg>
+          </button>
+        </li>
+        <!-- {:else}
+        <p>No tasks today!</p> -->
+      {/each}
+    </ul>
     <div class="empty-state">
       <svg class="checklist-icon"><use href="#checklist-icon" /></svg>
       <!-- This should only appear when there are no entries -->
