@@ -18,7 +18,7 @@
     // #Reactive
     // Because Svelte's reactivity is based on assignments, using array methods like
     // .push() and .splice() won't automatically trigger updates
-    // We use assignment below to trigger the update and take advantage of
+    // We use the spread operator and reassignment below to trigger the update and take advantage of
     // Svelte's reactivity
     todoItems = [...todoItems, todo];
     newTodo = '';
@@ -36,12 +36,15 @@
       <h2 class="empty-state__title">Add your first task</h2>
       <p class="empty-state__description">Let's get some things done!</p>
     </div>
-    <form>
+    <!-- #EventHandler Specifies the function that should run on the submit event with addTodo() as the handler  -->
+    <form on:submit|preventDefault={addTodo}>
+      <!-- #Binding We bind the prop value to the reactive variable newTodo -->
       <input
         class="js-todo-input"
         type="text"
-        aria-label="Enter a new todo item"
-        placeholder="E.g. Build a web app"
+        aria-label="Add a new task to do"
+        placeholder="E.g. Eat breakfast"
+        bind:value={newTodo}
       />
     </form>
   </div>
