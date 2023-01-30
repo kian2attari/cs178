@@ -2,7 +2,27 @@
   // #Component - the todo app itself is a component than can be reused in other projects
   // The app could be broken down into smaller components, but since the app is simple,
   // I've kept it all in one file
-  // component logic
+  let todoItems = [];
+  let newTodo = '';
+
+  function addTodo() {
+    newTodo = newTodo.trim();
+    if (!newTodo) return;
+
+    const todo = {
+      text: newTodo,
+      checked: false,
+      id: Date.now(),
+    };
+
+    // #Reactive
+    // Because Svelte's reactivity is based on assignments, using array methods like
+    // .push() and .splice() won't automatically trigger updates
+    // We use assignment below to trigger the update and take advantage of
+    // Svelte's reactivity
+    todoItems = [...todoItems, todo];
+    newTodo = '';
+  }
 </script>
 
 <main>
