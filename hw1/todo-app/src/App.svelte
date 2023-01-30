@@ -15,7 +15,6 @@
   // #Reactive
   let newTodo = '';
 
-  //TODO: Make these into props by exporting them from a separate file
   let appTitle = 'ToDo';
 
   function addTodo() {
