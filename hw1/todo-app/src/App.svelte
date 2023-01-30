@@ -2,6 +2,15 @@
   // #Component - the todo app itself is a component than can be reused in other projects
   // The app could be broken down into smaller components, but since the app is simple,
   // I've kept it all in one file
+
+  // We hook into the afterUpdate lifecycle hook to refocus on the input field after DOM updates
+  import { afterUpdate } from 'svelte';
+
+  afterUpdate(() => {
+    document.querySelector('.js-todo-input').focus();
+  });
+
+  //TODO: Make these into props by exporting them from a separate file
   let appTitle = 'ToDo';
   let todoItems = [];
   let newTodo = '';
@@ -19,13 +28,13 @@
     // #Format (inserted data into string dynamically)
     console.log(`Todo with id ${todo.id} added!`);
 
-    // #ReactiveDeclaration
+    // #Reactive
     // Because Svelte's reactivity is based on assignments, using array methods like
     // .push() and .splice() won't automatically trigger updates
     // We use the spread operator and reassignment below to trigger the update and take advantage of
     // Svelte's reactivity
     todoItems = [...todoItems, todo];
-    // #ReactiveDeclaration on newTodo var to clear the input field
+    // #Reactive on newTodo var to clear the input field
     newTodo = '';
   }
 
@@ -34,6 +43,11 @@
     const index = todoItems.findIndex((item) => item.id === Number(id));
     // #Properties - we use the . notation to access properties of the todo object
     todoItems[index].checked = !todoItems[index].checked;
+  }
+
+  function deleteTodo(id) {
+    // #Reactive reassignment
+    todoItems = todoItems.filter((item) => item.id !== Number(id));
   }
 </script>
 
@@ -52,18 +66,17 @@
         <!-- #Properties checked property access -->
         <li class="todo-item {todo.checked ? 'done' : ''}">
           <input id={todo.id} type="checkbox" />
+          <!-- #EventHandler on:click specifies the function that should run on the click event with toggleDone() as the handler  -->
           <label
             for={todo.id}
             class="tick"
             on:click={() => toggleDone(todo.id)}
           />
           <span>{todo.text}</span>
-          <button class="delete-todo">
+          <button class="delete-todo" on:click={() => deleteTodo(todo.id)}>
             <svg><use href="#delete-icon" /></svg>
           </button>
         </li>
-        <!-- {:else}
-        <p>No tasks today!</p> -->
       {/each}
     </ul>
     <div class="empty-state">
