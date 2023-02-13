@@ -22,14 +22,17 @@ app.use(express.urlencoded({ extended: true }));
 // GET METHOD
 app.get('/', (req, res) => {
   TodoTask.find({}, (err, tasks) => {
+    // #Template rendering
     res.render('todo.ejs', { todoTasks: tasks });
   });
 });
 
+// #Routing
 //POST METHOD
 app.post('/', async (req, res) => {
   const todoTask = new TodoTask({ content: req.body.content });
   try {
+    // #CRUD #Create
     await todoTask.save();
     res.redirect('/');
   } catch (err) {
@@ -39,24 +42,30 @@ app.post('/', async (req, res) => {
 
 //UPDATE
 app
+  // #Routing
   .route('/edit/:id')
   .get((req, res) => {
     const id = req.params.id;
+    // #CRUD #Read
     TodoTask.find({}, (err, tasks) => {
+      // #Template rendering
       res.render('todoEdit.ejs', { todoTasks: tasks, idTask: id });
     });
   })
   .post((req, res) => {
     const id = req.params.id;
+    // #CRUD #Update
     TodoTask.findByIdAndUpdate(id, { content: req.body.content }, (err) => {
       if (err) return res.send(500, err);
       res.redirect('/');
     });
   });
 
+// #Routing
 //DELETE
 app.route('/remove/:id').get((req, res) => {
   const id = req.params.id;
+  // #CRUD #Delete
   TodoTask.findByIdAndRemove(id, (err) => {
     if (err) return res.send(500, err);
     res.redirect('/');
